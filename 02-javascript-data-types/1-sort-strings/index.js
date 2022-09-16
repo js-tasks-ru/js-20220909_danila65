@@ -5,39 +5,15 @@
  * @returns {string[]}
  */
 export function sortStrings(arr, param = "asc") {
-  const basicSortedItems = sortFuncWithOrder(arr, param);
+  const copyArr = [...arr];
 
-  const reducedItems = basicSortedItems.reduce((acc, current) => {
-    const loweredCaseCurrent = current.toLowerCase();
-
-    if (!acc[loweredCaseCurrent]) {
-      acc[loweredCaseCurrent] = [current];
-      return acc;
+  return copyArr.sort((a, b) => {
+    if (param === "asc") {
+      return a.localeCompare(b, ["ru", "en"], { caseFirst: "upper" });
     }
 
-    acc[loweredCaseCurrent].push(current);
-    return acc;
-  }, {});
-
-  const result = Object.keys(reducedItems)
-    .map((key) =>
-      sortFuncWithOrder(reducedItems[key], param === "asc" ? "desc" : "asc")
-    )
-    .flat();
-
-  return result;
-
-  function sortFuncWithOrder(arr, order) {
-    const copyArr = [...arr];
-
-    if (order === "asc") {
-      return copyArr.sort((a, b) => {
-        return a.localeCompare(b);
-      });
+    if (param === "desc") {
+      return b.localeCompare(a, ["ru", "en"], { caseFirst: "upper" });
     }
-
-    return copyArr.sort((a, b) => {
-      return b.localeCompare(a);
-    });
-  }
+  });
 }

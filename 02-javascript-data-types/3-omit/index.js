@@ -5,14 +5,16 @@
  * @returns {object} - returns the new object
  */
 export const omit = (obj, ...fields) => {
-  const newObj = { ...obj };
+  const newObj = {};
 
-  Object.entries(newObj).forEach(([key, value]) => {
-    const keyToDelete = fields.find((el) => el === key);
+  Object.entries(obj).forEach(([key, value]) => {
+    const keyToSkip = fields.find(el => el === key);
 
-    if (keyToDelete) {
-      delete newObj[keyToDelete];
+    if (keyToSkip) {
+      return;
     }
+
+    newObj[key] = value;
   });
 
   return newObj;
