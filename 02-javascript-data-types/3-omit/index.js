@@ -5,5 +5,17 @@
  * @returns {object} - returns the new object
  */
 export const omit = (obj, ...fields) => {
+  const newObj = {};
 
+  Object.entries(obj).forEach(([key, value]) => {
+    const keyToSkip = fields.find(el => el === key);
+
+    if (keyToSkip) {
+      return;
+    }
+
+    newObj[key] = value;
+  });
+
+  return newObj;
 };
