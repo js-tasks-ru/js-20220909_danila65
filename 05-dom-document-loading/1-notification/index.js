@@ -5,21 +5,17 @@ export default class NotificationMessage {
       duration,
       type,
     };
+    this.duration = duration;
+    this.type = type;
+
+    this.show();
   }
 
   static hasNotification = false;
   static id = Math.random().toString(36).substring(2, 7);
   static interval = null;
 
-  show(additionalEl) {
-    let additionalElement = '';
-    if (additionalEl) {
-      const wrap = document.createElement('div');
-      wrap.append(additionalEl);
-
-      additionalElement = wrap.innerHTML;
-    }
-
+  show(additionalEl = '') {
     const template = `
     <div class="notification ${this.animationProp.type}" style="--value:${
       this.animationProp.duration / 1000
@@ -31,12 +27,17 @@ export default class NotificationMessage {
           ${this.message}
         </div>
       </div>
-      ${additionalElement}
     </div>
     `;
 
     const wrapper = document.createElement("div");
-    wrapper.innerHTML = template;
+
+    if (additionalEl) { 
+      additionalEl.innerHTML = template;
+      wrapper.append(additionalEl);
+    } else {
+      wrapper.innerHTML = template;
+    }
 
     if (NotificationMessage.hasNotification === true) {
       const currentEl = document.getElementById(NotificationMessage.id);
