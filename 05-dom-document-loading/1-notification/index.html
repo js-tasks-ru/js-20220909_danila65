@@ -6,16 +6,29 @@
 </head>
 
 <button id="btn1">Show simple message!</button>
+<button id="btn2">Destroy!</button>
 
 <script type="module">
   import NotificationMessage from './index.js';
+
+  let i = null;
 
   btn1.addEventListener('click', () => {
     const notification = new NotificationMessage('Hello World', {
       duration: 2000,
       type: 'success'
     });
+    i = notification;
 
-    notification.show();
+    const testDiv = document.createElement('div');
+    testDiv.textContent = 'test div';
+
+    notification.show(testDiv);
+    console.log(notification.element.outerHTML)
+    console.log(notification.element)
+  });
+
+  btn2.addEventListener('click', () => {
+    i.destroy();
   });
 </script>
