@@ -84,4 +84,40 @@ export default class SortableTable {
     wrap.innerHTML = contentString;
     return wrap.firstElementChild;
   }
+
+  sort(field, order) {
+    const copyArr = [...this.data];
+
+    const res = copyArr.sort((a, b) => {
+      const valueA = a[field];
+      const valueB = b[field];
+
+      if (order === "asc") {
+        if (typeof valueA === 'number' && typeof valueB === 'number') {
+          return valueA - valueB;
+        }
+
+        return valueA.localeCompare(valueB, ["ru", "en"], { caseFirst: "upper" });
+      }
+  
+      if (order === "desc") {
+        if (typeof valueA === 'number' && typeof valueB === 'number') {
+          return valueB - valueA;
+        }
+
+        return valueB.localeCompare(valueA, ["ru", "en"], { caseFirst: "upper" });
+      }
+    });
+    
+    this.data = res;
+    this.rerender();
+  }
+
+  rerender() {
+    const tableRoot = document.querySelector('.sortable-table');
+    tableRoot.innerHTML = '';
+    tableRoot.append(this.renderHeader());
+    tableRoot.append(this.renderBody());
+    this.element = tableRoot;
+  }
 }
