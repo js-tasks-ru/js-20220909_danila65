@@ -1,10 +1,16 @@
 export default class ColumnChart {
-  constructor(initArgs = {}) {
-    this.data = initArgs.data || [];
-    this.label = initArgs.label;
-    this.value = initArgs.value;
-    this.link = initArgs.link;
-    this.formatHeading = initArgs.formatHeading;
+  constructor({
+    data = [],
+    label = "",
+    link = "",
+    value = 0,
+    formatHeading = data => data,
+  } = {}) {
+    this.data = data || [];
+    this.label = label;
+    this.value = value;
+    this.link = link;
+    this.formatHeading = formatHeading;
     this.chartHeight = 50;
 
     this.id = Math.random().toString(36).substring(2, 7);
@@ -25,8 +31,8 @@ export default class ColumnChart {
     const titleDiv = this.createChartTitle();
     const chartContainer = this.createChartContainer();
 
-    chartRoot.appendChild(titleDiv);
-    chartRoot.appendChild(chartContainer);
+    chartRoot.append(titleDiv);
+    chartRoot.append(chartContainer);
 
     this.element = chartRoot;
   }
@@ -42,7 +48,7 @@ export default class ColumnChart {
       link.textContent = "View all";
       link.setAttribute("href", this.link);
 
-      titleDiv.appendChild(link);
+      titleDiv.append(link);
     }
 
     return titleDiv;
@@ -68,16 +74,15 @@ export default class ColumnChart {
 
     this.data.forEach(value => {
       const barEl = this.createBar({value, measureUnit, maxBarValue});
-      body.appendChild(barEl);
+      body.append(barEl);
     });
 
-    chartContainer.appendChild(header);
-    chartContainer.appendChild(body);
+    chartContainer.append(header);
+    chartContainer.append(body);
 
     return chartContainer;
   }
 
-  // c # тесты не проходят
   createBar({value, measureUnit, maxBarValue}) {
     const barDiv = document.createElement('div');
     barDiv.style = `--value: ${Math.floor(value * measureUnit)}`;
@@ -92,11 +97,13 @@ export default class ColumnChart {
     this.render();
   }
 
-  destroy() {}
+  destroy() {
+    this.remove();
+    this.element = null;
+  }
 
   remove() {
-    const selfEl = document.getElementById(this.id);
-    selfEl.parentElement.innerHTML = '';
+    this.element.remove();
   }
 }
 
