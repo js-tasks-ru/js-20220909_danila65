@@ -6,7 +6,7 @@ export default class ColumnChart {
     value = 0,
     formatHeading = data => data,
   } = {}) {
-    this.data = data || [];
+    this.data = data;
     this.label = label;
     this.value = value;
     this.link = link;
