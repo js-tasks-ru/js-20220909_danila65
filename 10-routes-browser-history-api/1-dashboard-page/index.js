@@ -21,6 +21,8 @@ export default class Page {
 
     this.element = elem.firstElementChild;
     this.subElements = this.getSubElements(this.element);
+    this.main = document.querySelector(".main");
+    this.sidebarToggler = document.querySelector(".sidebar__toggler");
 
     this.createComponents();
     this.renderComponents();
@@ -40,7 +42,7 @@ export default class Page {
     });
 
     const sortableTable = new SortableTable(header, {
-      url: `api/dashboard/bestsellers?_start=1&_end=30&from=${from.toISOString()}&to=${to.toISOString()}&_sort=title&_order=asc`,
+      url: `api/dashboard/bestsellers?_start=1&_end=20&from=${from.toISOString()}&to=${to.toISOString()}&_sort=title&_order=asc`,
       isSortLocally: true,
     });
 
@@ -127,13 +129,19 @@ export default class Page {
   }
 
   async update({ from, to }) {
-    const data = await this.fetchData(this.url);
+    this.main.classList.add("is-loading");
+
+    const data = await this.fetchData({ from, to });
 
     this.components.sortableTable.update(data);
 
-    this.components.ordersChart.update(from, to);
-    this.components.customersChart.update(from, to);
-    this.components.salesChart.update(from, to);
+    const result = await Promise.all([
+      this.components.ordersChart.update(from, to),
+      this.components.customersChart.update(from, to),
+      this.components.salesChart.update(from, to),
+    ]);
+
+    this.main.classList.remove("is-loading");
   }
 
   fetchData({ from, to }) {
@@ -149,10 +157,14 @@ export default class Page {
   }
 
   initListeners() {
-    this.components.rangePicker.element.addEventListener("data-select", (e) => {
+    this.components.rangePicker.element.addEventListener("date-select", (e) => {
       const { from, to } = e.detail;
 
       this.update({ from, to });
+    });
+
+    this.sidebarToggler.addEventListener('click', () => {
+      document.body.classList.toggle('is-collapsed-sidebar');
     });
   }
 
