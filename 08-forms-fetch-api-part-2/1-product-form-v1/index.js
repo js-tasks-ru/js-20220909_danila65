@@ -27,8 +27,7 @@ export default class ProductForm {
   }
 
   async render() {
-    const categories = await this.fetchCategories();
-    const product = await this.fetchProduct(this.productId);
+    const [categories, product] = await Promise.all([this.fetchCategories(), this.fetchProduct(this.productId)]);
 
     const formWrap = document.createElement("div");
     formWrap.classList.add("product-form");
