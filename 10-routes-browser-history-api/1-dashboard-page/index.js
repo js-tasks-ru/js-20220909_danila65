@@ -1,6 +1,7 @@
 import RangePicker from "./components/range-picker/src/index.js";
 import SortableTable from "./components/sortable-table/src/index.js";
 import ColumnChart from "./components/column-chart/src/index.js";
+import Tooltip from "./components/tooltip/src/index.js";
 import header from "./bestsellers-header.js";
 
 import fetchJson from "./utils/fetch-json.js";
@@ -46,7 +47,7 @@ export default class Page {
     const ordersChart = new ColumnChart({
       label: "Заказы",
       url: "api/dashboard/orders",
-      link: "",
+      link: "/sales",
       range: {
         from,
         to,
@@ -57,7 +58,12 @@ export default class Page {
       label: "Продажи",
       url: "api/dashboard/sales",
       link: "",
-      formatHeading: (d) => `${d}$`,
+      formatHeading: (d) =>
+        new Intl.NumberFormat("en-US", {
+          style: "currency",
+          currency: "USD",
+          maximumFractionDigits: 0,
+        }).format(d),
       range: {
         from,
         to,
@@ -73,6 +79,10 @@ export default class Page {
         to,
       },
     });
+
+    const tooltip = new Tooltip();
+
+    tooltip.initialize();
 
     this.components = {
       rangePicker,
